@@ -2,6 +2,9 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\OtherEntity;
+use AppBundle\Entity\TestEntity;
+use AppBundle\Entity\YetAnotherEntity;
 use Blackfire\Client;
 use Blackfire\ClientConfiguration;
 use Blackfire\Exception\ExceptionInterface as BlackfireException;
@@ -22,10 +25,37 @@ class DefaultController extends Controller
      */
     public function indexAction(Request $request)
     {
+        $this->warmUp();
+
         // replace this example code with whatever you need
         return $this->render('default/index.html.twig', [
             'base_dir' => realpath($this->getParameter('kernel.root_dir').'/..'),
         ]);
+    }
+
+    private function warmUp()
+    {
+        if (is_file($this->getParameter('fixtures.loaded'))) {
+            return;
+        }
+
+        try {
+            $em = $this->getDoctrine()->getManager();
+
+            for ($i = 0; $i < 50; ++$i) {
+                $em->persist(new TestEntity('Test Entity '.$i, 'test_entity_'.$i));
+                $em->persist(new OtherEntity('Other Entity '.$i, 'other_entity_'.$i));
+                $em->persist(new YetAnotherEntity('Yet another Entity '.$i, 'yet_another_entity_'.$i));
+            }
+
+            $em->flush();
+
+            $this->get('filesystem')->touch($this->getParameter('fixtures.loaded'));
+
+            // Catch any configuration or doctrine exception
+        } catch (\Exception $e) {
+            throw new \RuntimeException('Could not load fixtures.', 0, $e);
+        }
     }
 
     private function createBlackFireProbe($title = null)
