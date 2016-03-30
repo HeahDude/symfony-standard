@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "b43c2d5e1890ca2b4feec068c8119dd7",
-    "content-hash": "dd4e6a5012fa460ff9482b733d1671c8",
+    "hash": "9e2ea74dcd01f689c00cd36d2c8d50c4",
+    "content-hash": "99efeafa11d51fb999794b5bbe17ef28",
     "packages": [
         {
             "name": "blackfire/php-sdk",
@@ -1752,17 +1752,11 @@
         },
         {
             "name": "symfony/symfony",
-            "version": "dev-master",
+            "version": "dev-minor-optimize-doctrine_choice_loader",
             "source": {
                 "type": "git",
-                "url": "https://github.com/symfony/symfony.git",
-                "reference": "29469323eb879b61a7898c256d68c040593231f4"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/symfony/symfony/zipball/29469323eb879b61a7898c256d68c040593231f4",
-                "reference": "29469323eb879b61a7898c256d68c040593231f4",
-                "shasum": ""
+                "url": "/Users/Heah/Sites/dev/symfony",
+                "reference": "d082b3837cb0715bb957dd0a5223830808419e68"
             },
             "require": {
                 "doctrine/common": "~2.4",
@@ -1859,7 +1853,6 @@
                     "**/Tests/"
                 ]
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -1878,7 +1871,7 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2016-03-28 07:08:36"
+            "time": "2016-03-29 23:16:14"
         },
         {
             "name": "twig/twig",
@@ -2051,7 +2044,14 @@
             "time": "2016-01-21 09:38:31"
         }
     ],
-    "aliases": [],
+    "aliases": [
+        {
+            "alias": "3.1-dev",
+            "alias_normalized": "3.1.0.0-dev",
+            "version": "dev-minor-optimize-doctrine_choice_loader",
+            "package": "symfony/symfony"
+        }
+    ],
     "minimum-stability": "stable",
     "stability-flags": {
         "symfony/symfony": 20

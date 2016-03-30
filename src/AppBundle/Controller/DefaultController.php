@@ -51,7 +51,7 @@ class DefaultController extends Controller
             ->add('Save', '\Symfony\Component\Form\Extension\Core\Type\SubmitType')
         ;
 
-        $optimized = false;
+        $optimized = true;
         $subtitle = ($post = 'POST' === $request->getMethod() ? 'on submit' : 'on init').($optimized ? ' optimized' : '');
 
         // Start profiling
