@@ -10,6 +10,7 @@ use Blackfire\ClientConfiguration;
 use Blackfire\Exception\ExceptionInterface as BlackfireException;
 use Blackfire\Profile\Configuration;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -25,11 +26,61 @@ class DefaultController extends Controller
      */
     public function indexAction(Request $request)
     {
+        // Load fixtures
         $this->warmUp();
+
+        $em = $this->getDoctrine()->getManager();
+        $data = array(
+            'test' => $e1 = new TestEntity('Pre set test entity', 'pre_set_test_entity'),
+            'other' => $e2 = new TestEntity('Pre set other entity', 'pre_set_other_entity'),
+            'yet_another' => $e3 = new TestEntity('Pre set yet another entity', 'pre_set_yet_another_entity'),
+        );
+
+        $em->persist($e1);
+        $em->persist($e2);
+        $em->persist($e3);
+
+        $options = array(
+            'type' => EntityType::class,
+            'choice_options' => array('choice_label' => 'name'),
+        );
+        $builder = $this->createFormBuilder($data)
+            ->add('test', $options['type'], array('class' => TestEntity::class) + $options['choice_options'])
+            ->add('other', $options['type'], array('class' => OtherEntity::class) + $options['choice_options'])
+            ->add('yet_another', $options['type'], array('class' => OtherEntity::class) + $options['choice_options'])
+            ->add('Save', '\Symfony\Component\Form\Extension\Core\Type\SubmitType')
+        ;
+
+        $optimized = false;
+        $subtitle = ($post = 'POST' === $request->getMethod() ? 'on submit' : 'on init').($optimized ? ' optimized' : '');
+
+        // Start profiling
+        $probe = $this->createBlackFireProbe('Form types loading '.$subtitle);
+
+        // Loads the types and creates the lazy choice list
+        $form = $builder->getForm();
+
+        if ($post) {
+            $this->sendProbe($probe);
+            $probe = $this->createBlackFireProbe('Handle request');
+
+            $form->handleRequest($request);
+        }
+
+        $this->sendProbe($probe);
+
+        // Start another profiling
+        $probe = $this->createBlackFireProbe('ChoiceList loading '.$subtitle);
+
+        // Loads the entity and creates an array choice list
+        $view = $form->createView();
+
+        $this->sendProbe($probe);
 
         // replace this example code with whatever you need
         return $this->render('default/index.html.twig', [
             'base_dir' => realpath($this->getParameter('kernel.root_dir').'/..'),
+            'form' => $view,
         ]);
     }
 
